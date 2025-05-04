@@ -23,9 +23,6 @@ pamela =  UnPersonaje "Pamela" lluviaDeTuercas torretaCurativa 0 False 9600
 bolaEspinosa :: Poder 
 bolaEspinosa unPersonaje = unPersonaje {cantidadDeVida = max 0 (cantidadDeVida unPersonaje - 1000)} 
 
-granadaDeEspinas :: Poder 
-granadaDeEspinas unPersonaje = unPersonaje
-
 lluviaDeTuercas :: Poder
 lluviaDeTuercas unPersonaje 
     |esAliado unPersonaje = unPersonaje {cantidadDeVida = cantidadDeVida unPersonaje + 800}
@@ -38,4 +35,9 @@ equipo :: [Personaje]
 equipo = [espina, pamela]
 
 torretaCurativa :: Poder
-torretaCurativa unPersonaje = unPersonaje
+torretaCurativa unPersonaje
+    | esAliado unPersonaje = unPersonaje { poderActivo = True , cantidadDeVida = cantidadDeVida unPersonaje *2}
+    | otherwise= unPersonaje
+
+granadaDeEspinas :: Poder 
+granadaDeEspinas unPersonaje = unPersonaje
