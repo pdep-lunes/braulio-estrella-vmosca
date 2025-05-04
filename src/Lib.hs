@@ -7,7 +7,6 @@ data Personaje = UnPersonaje {
                             nombre :: String,
                             poderBasico :: Poder, 
                             superPoder :: Poder, 
-                            radioDeSuperPoder :: Int,
                             poderActivo :: Bool, 
                             cantidadDeVida :: Int
                         } deriving Show
@@ -15,10 +14,10 @@ data Personaje = UnPersonaje {
 type Poder = Personaje -> Personaje
 
 espina :: Personaje
-espina  =  UnPersonaje "Espina" bolaEspinosa granadaDeEspinas 5 True 4800
+espina  =  UnPersonaje "Espina" bolaEspinosa (granadaDeEspinas 5) True 4800
 
 pamela :: Personaje
-pamela =  UnPersonaje "Pamela" lluviaDeTuercas torretaCurativa 0 False 9600
+pamela =  UnPersonaje "Pamela" lluviaDeTuercas torretaCurativa False 9600
 
 bolaEspinosa :: Poder 
 bolaEspinosa unPersonaje = unPersonaje {cantidadDeVida = max 0 (cantidadDeVida unPersonaje - 1000)} 
@@ -39,5 +38,8 @@ torretaCurativa unPersonaje
     | esAliado unPersonaje = unPersonaje { poderActivo = True , cantidadDeVida = cantidadDeVida unPersonaje *2}
     | otherwise= unPersonaje
 
-granadaDeEspinas :: Poder 
-granadaDeEspinas unPersonaje = unPersonaje
+granadaDeEspinas :: Int -> Poder 
+granadaDeEspinas radio unPersonaje
+    |radio > 3 && cantidadDeVida unPersonaje < 800 = unPersonaje { nombre = nombre unPersonaje ++ " espina estuvo aqui", cantidadDeVida = 0,poderActivo = False} 
+    |radio > 3 = unPersonaje  {nombre = nombre unPersonaje ++ " espina estuvo aqui"}
+    | otherwise = bolaEspinosa unPersonaje
