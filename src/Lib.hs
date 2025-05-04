@@ -43,3 +43,11 @@ granadaDeEspinas radio unPersonaje
     |radio > 3 && cantidadDeVida unPersonaje < 800 = unPersonaje { nombre = nombre unPersonaje ++ " espina estuvo aqui", cantidadDeVida = 0,poderActivo = False} 
     |radio > 3 = unPersonaje  {nombre = nombre unPersonaje ++ " espina estuvo aqui"}
     | otherwise = bolaEspinosa unPersonaje
+
+atacarConElPoderEspecial :: Personaje -> Personaje -> Personaje
+atacarConElPoderEspecial unPersonaje contrincante 
+    |poderActivo unPersonaje = (poderBasico unPersonaje . superPoder unPersonaje) contrincante 
+    |otherwise = unPersonaje
+
+quienesEstanEnLasUltimas :: [Personaje] -> [String]
+quienesEstanEnLasUltimas braulios = map nombre ( filter ((< 800) . cantidadDeVida) braulios)
