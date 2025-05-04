@@ -3,27 +3,39 @@ module Lib () where
 import Text.Show.Functions ()
 
 
-data Personajes = UnEquipo {
+data Personaje = UnPersonaje {
                             nombre :: String,
                             poderBasico :: Poder, 
                             superPoder :: Poder, 
+                            radioDeSuperPoder :: Int,
                             poderActivo :: Bool, 
                             cantidadDeVida :: Int
-                        } deriving Show 
+                        } deriving Show
 
-type Poder = Personajes -> Personajes
+type Poder = Personaje -> Personaje
 
-espina :: Personajes
-espina  =  UnEquipo "Espina" bolaEspinosa granadaDeEspinas True 4800
+espina :: Personaje
+espina  =  UnPersonaje "Espina" bolaEspinosa granadaDeEspinas 5 True 4800
 
-pamela :: Personajes
-pamela =  UnEquipo "Pamela" lluviaDeTuercas torretaCurativa False 9600
+pamela :: Personaje
+pamela =  UnPersonaje "Pamela" lluviaDeTuercas torretaCurativa 0 False 9600
 
---bolaEspinosa :: Poder 
---bolaEspinosa unPersonaje = unPersonaje {cantidadDeVida - 1000} 
+bolaEspinosa :: Poder 
+bolaEspinosa unPersonaje = unPersonaje {cantidadDeVida = max 0 (cantidadDeVida unPersonaje - 1000)} 
 
-granadaDeEspinas :: Int -> Poder
-granadaDeEspinas radio unPersonaje = unPersonaje 
-| unPersonaje radio > 3 = {nombre ++ "espina estuvo aqui"} 
-| unPersonaje cantidadDeVida < 800 =  {poderActivo = False, cantidadDeVida = 0}
-| otherwise = bolaEspinosa
+granadaDeEspinas :: Poder 
+granadaDeEspinas unPersonaje = unPersonaje
+
+lluviaDeTuercas :: Poder
+lluviaDeTuercas unPersonaje 
+    |esAliado unPersonaje = unPersonaje {cantidadDeVida = cantidadDeVida unPersonaje + 800}
+    |otherwise = unPersonaje {cantidadDeVida = div (cantidadDeVida unPersonaje)  2}
+
+esAliado :: Personaje -> Bool
+esAliado unPersonaje =  elem (nombre unPersonaje)  (map nombre equipo)
+
+equipo :: [Personaje]
+equipo = [espina, pamela]
+
+torretaCurativa :: Poder
+torretaCurativa unPersonaje = unPersonaje
